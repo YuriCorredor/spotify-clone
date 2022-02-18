@@ -5,12 +5,13 @@ import { useState, useEffect } from 'react'
 import useSpotify from '../hooks/useSpotify'
 import { useRecoilState, useRecoilValue } from "recoil"
 import { playlistIdState, playlistState } from "../atoms/playlistAtom"
+import PlaylistInfo from "./PlaylistInfo"
+import SongsList from "./SongsList"
 
 export default function Center() {
 
   const { data: session } = useSession()
   const spotifyApi = useSpotify()
-  const [color, setColor] = useState()
   const playlistId = useRecoilValue(playlistIdState)
   const [playlist, setPlaylist] = useRecoilState(playlistState)
 
@@ -23,16 +24,13 @@ export default function Center() {
 
   }, [spotifyApi, playlistId])
 
-  console.log(playlist)
-
   return (
-    <div className="flex-grow flex-col pb-12 sm:w-[80%] h-[92%] sm:h-full relative">
-      <section className='flex-grow overflow-y-scroll overflow-x-hidden scrollbar bg-black'>
+    <div className="flex-grow flex-col sm:w-[80%] h-[92%] sm:h-full relative overflow-y-scroll overflow-x-hidden scrollbar bg-black">
+      <section className='flex-grow'>
         <UserInfo />
-        <div className={`flex items-end space-x-7 h-80 bg-gradient-to-b to-black from-red-500`}>
-          <h1>asd;lkas</h1>
-        </div>
+        <PlaylistInfo playlist={playlist} />
       </section>
+      <SongsList />
       <Player />
     </div>
   )
