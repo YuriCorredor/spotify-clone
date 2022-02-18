@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil"
-import { currentTrackPlayingIdState, erroredState, isPlayingState } from "../atoms/songAtom"
+import { currentTrackPlayingIdState, erroredState, errorMessageState, isPlayingState } from "../atoms/songAtom"
 import useSpotify from "../hooks/useSpotify"
 import { prettifyTime } from "../utils/utils"
 
@@ -10,20 +10,22 @@ export default function SongItem({ track, index }) {
     const [currentTrackPlayingId, setCurrentTrackPlayingId] = useRecoilState(currentTrackPlayingIdState)
     const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
     const [errored, setErrored] = useRecoilState(erroredState)
+    const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState)
 
-    const playSong = track => {
+    const playSong = () => {
         spotifyApi.play({
-            uris: [track.uri],
+            uris: [track?.track?.uri],
         }).then(() => {
-            setCurrentTrackPlayingId(track)
+            setCurrentTrackPlayingId(track?.track?.id)
             setIsPlaying(true)
-        }).catch(() => {
+        }).catch(err => {
+            setErrorMessage(err.message)
             setErrored(true)
         })
     }
 
     return (
-        <div onClick={() => playSong(track.track.id)} className={`pl-4 flex items-center space-x-4 hover:bg-gray-900 rounded-lg cursor-pointer`}>
+        <div onClick={playSong} className={`pl-4 flex items-center space-x-4 hover:bg-gray-900 rounded-lg cursor-pointer`}>
             <div className="w-8 text-center">
                 <p className="font-thin text-sm opacity-80">{index + 1}</p>
             </div>

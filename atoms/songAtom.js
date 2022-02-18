@@ -14,3 +14,8 @@ export const erroredState = atom({
     key: 'erroredState',
     default: false
 })
+
+export const errorMessageState = atom({
+    key: 'errorMessageState',
+    default: ''
+})

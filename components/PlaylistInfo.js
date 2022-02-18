@@ -1,27 +1,42 @@
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
-import { playlistColorState, playlistIdState } from "../atoms/playlistAtom"
+import { playlistColorState, playlistIdState, playlistState } from "../atoms/playlistAtom"
+import { erroredState, errorMessageState } from "../atoms/songAtom"
+import useSpotify from "../hooks/useSpotify"
 
 const colors = [
-    "from-indigo-500",
-    "from-blue-500",
-    "from-green-500",
-    "from-red-500",
-    "from-pink-500",
-    "from-yellow-500",
-    "from-purple-500",
-    "from-cyan-500"
+  "from-indigo-500",
+  "from-blue-500",
+  "from-green-500",
+  "from-red-500",
+  "from-pink-500",
+  "from-yellow-500",
+  "from-purple-500",
+  "from-cyan-500"
 ]
 
-export default function PlaylistInfo({ playlist }) {
+export default function PlaylistInfo() {
 
-    const [color, setColor] = useRecoilState(playlistColorState)
-    const playlistId = useRecoilValue(playlistIdState)
+  const [color, setColor] = useRecoilState(playlistColorState)
+  const spotifyApi = useSpotify()
+  const playlistId = useRecoilValue(playlistIdState)
+  const [playlist, setPlaylist] = useRecoilState(playlistState)
+  const [errored, setErrored] = useRecoilState(erroredState)
+  const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState)
 
-    useEffect(() => {
-      setColor(colors[Math.floor(Math.random()*colors.length)])
-    }, [playlistId])
-    
+  useEffect(() => {
+    spotifyApi
+      .getPlaylist(playlistId)
+      .then(data => {
+        setPlaylist(data.body)
+        setColor(colors[Math.floor(Math.random()*colors.length)])
+      })
+      .catch(err => {
+        setErrorMessage(err)
+        setErrored(true)
+      })
+  }, [spotifyApi, playlistId])
+  
 
   return (
     <div className={`flex items-end justify-center sm:justify-start space-x-7 bg-gradient-to-b to-black ${color}`}>
