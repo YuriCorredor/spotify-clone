@@ -29,3 +29,9 @@ a {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+@layer components {
+  .button {
+    @apply cursor-pointer hover:scale-125 transition transform duration-100 ease-in-out
+  }
+}

@@ -25,7 +25,7 @@ export default function PlaylistBar() {
   return (
     <aside className="flex scrollbar overflow-x-hidden overflow-y-scroll sm:flex-col sm:justify-start justify-around items-center bottom-0 left-0 w-screen order-last sm:order-first sm:w-[20%] sm:min-w-[20%] sm:h-screen bg-black">
       <div className="p-2 m-8 hidden sm:block">
-        <img alt="spotify-logo" width={85} height={80} src={`/spotify-logo.png`}/>
+        <img alt="" width={85} height={80} src={`/spotify-logo.png`}/>
       </div>
       <div className="flex flex-col sm:flex-row items-center group sm:self-start cursor-pointer sm:mb-5 mr-4">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 m-2 stroke-[#b2b2b2] group-hover:stroke-white" fill="none" viewBox="0 0 24 24">

@@ -29,7 +29,7 @@ export default function SongItem({ track, index }) {
             <div className="w-8 text-center">
                 <p className="font-thin text-sm opacity-80">{index + 1}</p>
             </div>
-            <img className="w-10" alt='song cover' src={songCoverSource[songCoverSource.length - 1].url}></img>
+            <img className="w-10" alt='' src={songCoverSource[songCoverSource.length - 1].url} />
             <div className="truncate whitespace-nowrap inline-block overflow-hidden w-60 ">
                 <h2 className="truncate">{track?.track?.name}</h2>
                 <a target='_blank' href={track?.track?.artists?.[0].external_urls?.spotify} className="truncate font-thin text-sm opacity-60 hover:underline hover:opacity-100 cursor-pointer w-fit">{track?.track?.artists?.[0].name}</a>

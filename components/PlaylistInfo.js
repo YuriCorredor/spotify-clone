@@ -41,7 +41,7 @@ export default function PlaylistInfo() {
   return (
     <div className={`flex items-end justify-center sm:justify-start space-x-7 bg-gradient-to-b to-black ${color}`}>
         <div className="p-8 pt-32 flex sm:space-x-6 text-white flex-col sm:flex-row">
-        <img className="h-44 w-44 shadow-2xl place-self-center" src={playlist?.images?.[0]?.url} alt="playlist image" />
+        <img className="h-44 w-44 shadow-2xl place-self-center" src={playlist?.images?.[0]?.url} alt="" />
         <div className="place-self-end text-center sm:text-left">
             <p className="font-bold text-sm">PLAYLIST</p>
             <h2 className="font-bold text-4xl">{playlist?.name}</h2>
