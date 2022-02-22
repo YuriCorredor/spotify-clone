@@ -6,13 +6,14 @@ export async function middleware(req) {
     const token = await getToken({ req, secret: process.env.JWT_SECRET })
 
     const url = req.nextUrl.clone()
+    const { pathname } = req.nextUrl
 
-    if (url.pathname.includes('/api/auth') || token) {
+    if (pathname.includes('/api/auth') | token) {
         return NextResponse.next()
     }
 
 
-    if (!token && url.pathname !== '/login') {
+    if (!token & pathname !== '/login') {
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
