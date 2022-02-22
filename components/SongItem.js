@@ -25,9 +25,17 @@ export default function SongItem({ track, index }) {
     }
 
     return (
-        <div onClick={playSong} className={`pl-4 flex items-center space-x-4 hover:bg-gray-900 rounded-lg cursor-pointer`}>
+        <div onClick={playSong} className={`pl-4 flex items-center space-x-4 hover:bg-gray-900 ${track?.track?.id === currentTrackPlayingId ? 'bg-gray-900' : ''} rounded-lg cursor-pointer`}>
             <div className="w-8 text-center">
+                {track?.track?.id === currentTrackPlayingId && isPlaying ?
+                <img src='https://open.scdn.co/cdn/images/equaliser-animated-green.f93a2ef4.gif' width='14' height='14' />
+                : track?.track?.id === currentTrackPlayingId ?
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 button" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                </svg>
+                : 
                 <p className="font-thin text-sm opacity-80">{index + 1}</p>
+                }
             </div>
             <img className="w-10" alt='' src={songCoverSource[songCoverSource.length - 1].url} />
             <div className="truncate whitespace-nowrap inline-block overflow-hidden w-60 ">

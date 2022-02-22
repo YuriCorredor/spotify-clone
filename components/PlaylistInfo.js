@@ -45,7 +45,7 @@ export default function PlaylistInfo() {
         <div className="place-self-end text-center sm:text-left">
             <p className="font-bold text-sm">PLAYLIST</p>
             <h2 className="font-bold text-4xl">{playlist?.name}</h2>
-            <p className="font-light opacity-60">{playlist?.description}</p>
+            <p className="font-light opacity-60">{playlist?.description.charAt(0) === '<' ? '' : playlist?.description}</p>
             <a href={playlist?.owner?.external_urls?.spotify} target="_blank" className="font-bold text-sm cursor-pointer hover:underline">{playlist?.owner?.id}</a>
         </div>
         </div>

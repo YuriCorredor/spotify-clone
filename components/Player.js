@@ -1,21 +1,25 @@
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { currentTrackPlayingIdState, erroredState, errorMessageState, isPlayingState } from '../atoms/songAtom'
 import useSpotify from '../hooks/useSpotify'
 import useSongInfo from '../hooks/useSongInfo'
 import { debounce } from "lodash"
+import { playlistState } from '../atoms/playlistAtom'
 
 export default function Player() {
 
     const spotifyApi = useSpotify()
     const { data: session } = useSession()
     const [currentTrackPlayingId, setCurrentTrackPlayingId] = useRecoilState(currentTrackPlayingIdState)
+    const playlist = useRecoilValue(playlistState)
     const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
     const [volume, setVolume] = useState(50)
     const songInfo = useSongInfo()
     const [errored, setErrored] = useRecoilState(erroredState)
     const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState)
+
+    playlist?.tracks?.items?.map(item => console.log(item.track.id === currentTrackPlayingId))
 
     const fetchCurrentSong = () => {
         if (!songInfo) {
@@ -25,7 +29,15 @@ export default function Player() {
                     spotifyApi.getMyCurrentPlaybackState()
                         .then(data => {
                             setIsPlaying(data?.body?.is_playing)
-                        })                    
+                        })
+                        .catch(err => {
+                            setErrored(true)
+                            setErrorMessage(err.message)
+                        })
+                })
+                .catch(err => {
+                    setErrored(true)
+                    setErrorMessage(err.message)
                 })
         }
     }
@@ -44,20 +56,24 @@ export default function Player() {
     }, [volume])
 
     const debounceAdjustVolume = useCallback(debounce(volume => {
-        console.log(volume)
         spotifyApi.setVolume(volume).catch(() => {})
     }, 400), [])
 
     const handlePlayAndPause = () => {
         spotifyApi.getMyCurrentPlaybackState()
             .then(data => {
+                setCurrentTrackPlayingId(data?.body?.item?.id)
                 if (data?.body?.is_playing) {
-                    spotifyApi.pause().then(() => setIsPlaying(false)).catch(err => {
+                    spotifyApi.pause()
+                    .then(() => setIsPlaying(false))
+                    .catch(err => {
                         setErrored(true)
                         setErrorMessage(err.message)
                     })
                 } else {
-                    spotifyApi.play().then(() => setIsPlaying(true)).catch(err => {
+                    spotifyApi.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(err => {
                         setErrored(true)
                         setErrorMessage(err.message)
                     })
@@ -70,33 +86,78 @@ export default function Player() {
     }
 
     const handleSkip = () => {
-        spotifyApi.skipToNext()
-            .then(data => console.log(data))
-            .catch(err => {
-                setErrored(true)
-                setErrorMessage(err.message)
+
+        const next = playlist?.tracks?.items?.flatMap((item, index) => {
+            if (item.track.id === currentTrackPlayingId) {
+                return index + 1
+            }
+            return []
+        })
+
+        let nextSong
+        if (playlist?.tracks?.items?.[parseInt(next)] !== undefined) {
+            nextSong = playlist?.tracks?.items?.[parseInt(next)]
+        } else {
+            nextSong = playlist?.tracks?.items?.[0]
+        }
+
+        spotifyApi.play({
+            uris: [nextSong?.track?.uri],
+        }).then(() => {
+            spotifyApi.getMyCurrentPlaybackState()
+            .then(data => {
+                setCurrentTrackPlayingId(data?.body?.item?.id)
+                setIsPlaying(true)
             })
+        })
+        .catch(err => {
+            setErrored(true)
+            setErrorMessage(err.message)
+        })
     }
 
     const handlePrevious = () => {
-        spotifyApi.skipToPrevious()
-            .then(data => console.log(data))
-            .catch(err => {
-                setErrored(true)
-                setErrorMessage(err.message)
+
+        const previous = playlist?.tracks?.items?.flatMap((item, index) => {
+            if (item.track.id === currentTrackPlayingId) {
+                return index - 1
+            }
+            return []
+        })
+
+        let previousSong
+        if (playlist?.tracks?.items?.[parseInt(previous)] !== undefined) {
+            previousSong = playlist?.tracks?.items?.[parseInt(previous)]
+        } else {
+            previousSong = playlist?.tracks?.items?.[playlist?.tracks?.items?.length - 1]
+        }
+
+
+        spotifyApi.play({
+            uris: [previousSong?.track?.uri],
+        }).then(() => {
+            spotifyApi.getMyCurrentPlaybackState()
+            .then(data => {
+                setCurrentTrackPlayingId(data?.body?.item?.id)
+                setIsPlaying(true)
             })
+        })
+        .catch(err => {
+            setErrored(true)
+            setErrorMessage(err.message)
+        })
     }
 
     return (
         <div className="px-4 w-full flex flex-row justify-between sticky bottom-0 left-0 h-16 sm:h-24 bg-black sm:bg-gradient-to-r sm:from-black sm:to-gray-900 text-white text-xs sm:text-sm space-x-4 sm:space-x-8 md:px-4">
-            <div className='flex w-42 truncate whitespace-nowrap items-center space-x-4'>
+            <div className='flex truncate whitespace-nowrap items-center space-x-4'>
                 <img className='hidden truncate md:inline h-12 w-12' alt='' src={songInfo?.album?.images?.[0]?.url} />
                 <div className='truncate'>
-                    <h3 className='truncate'>{songInfo?.name}</h3>
+                    <h3 className='truncate w-20 sm:w-40'>{songInfo?.name}</h3>
                     <p className='opacity-60 truncate'>{songInfo?.artists?.[0]?.name}</p>
                 </div>
             </div>
-            <div className='flex truncate flex-row space-x-2 justify-evenly items-center'>
+            <div className='flex truncate w-42 flex-row space-x-2 justify-evenly items-center'>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:w-8 md:h-8 button" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
                 </svg>
