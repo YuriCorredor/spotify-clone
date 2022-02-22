@@ -40,10 +40,10 @@ export default function SongItem({ track, index }) {
             <img className="w-10" alt='' src={songCoverSource[songCoverSource.length - 1].url} />
             <div className="truncate whitespace-nowrap inline-block overflow-hidden w-60 ">
                 <h2 className="truncate">{track?.track?.name}</h2>
-                <a target='_blank' href={track?.track?.artists?.[0].external_urls?.spotify} className="truncate font-thin text-sm opacity-60 hover:underline hover:opacity-100 cursor-pointer w-fit">{track?.track?.artists?.[0].name}</a>
+                <a rel="noreferrer" target='_blank' href={track?.track?.artists?.[0].external_urls?.spotify} className="truncate font-thin text-sm opacity-60 hover:underline hover:opacity-100 cursor-pointer w-fit">{track?.track?.artists?.[0].name}</a>
             </div>
             <div className="truncate whitespace-nowrap items-center justify-end pr-8 sm:pr-0 sm:justify-between md:pr-16 lg:pr-48 ml-auto flex flex-grow w-36">
-                <a href={track?.track?.album?.external_urls?.spotify} target='_blank' className="truncate font-thin opacity-60 text-sm hidden sm:inline px-2 hover:underline hover:opacity-100 cursor-pointer">{track?.track?.album?.name}</a>
+                <a rel="noreferrer" href={track?.track?.album?.external_urls?.spotify} target='_blank' className="truncate font-thin opacity-60 text-sm hidden sm:inline px-2 hover:underline hover:opacity-100 cursor-pointer">{track?.track?.album?.name}</a>
                 <p className="sm:px-2 font-thin text-sm opacity-60">{prettifyTime(track?.track?.duration_ms)}</p>
             </div>
         </div>

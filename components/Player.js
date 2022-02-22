@@ -44,7 +44,6 @@ export default function Player() {
 
     useEffect(() => {
         if (spotifyApi.getAccessToken() && !currentTrackPlayingId) {
-            fetchCurrentSong()
             setVolume(50)
         }
     }, [spotifyApi, currentTrackPlayingId, session])
