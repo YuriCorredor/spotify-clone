@@ -56,7 +56,7 @@ yarn dev
 
 <h1>Overview of the app</h1>
 
-Live website [HERE](youtube.com).
+Live website [HERE](https://spotify-clone-yuri-corredor.vercel.app/).
 
 Desktop                    |  Mobile
 :-------------------------:|:-------------------------:
