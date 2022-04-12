@@ -19,7 +19,7 @@
 
 <h1>Getting started</h1>
 
-This project uses the Spotify API, therefore, you'll need to get an API clicking key [here](https://developer.spotify.com/documentation/web-api/quick-start/) and following the structions on their website.
+This project uses the Spotify API, therefore, you'll need to get an API KEY clicking [here](https://developer.spotify.com/documentation/web-api/quick-start/) and following the structions on their website.
 
 
 ```bash
